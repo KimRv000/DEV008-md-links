@@ -1,4 +1,4 @@
-// Dar un path 
+// Dar un path (ejemplo)
 
 // 1) Verificar que el path es válido -----> T/F
 
@@ -11,10 +11,10 @@
 const path = require('path');
 const fs = require('fs');
 
-const examplePath = 'README.md'; //Debe ser un string vacío/ Se llena para pruebas aquí
+const examplePath = __filename; //Debe ser un string vacío/ Se llena para pruebas aquí // Con filename si lo valida correctamente
 
 // 1)
-function validatePath(userPath) { //Solo aceota rutas relativas **SOLUCIONAR**
+function validatePath(userPath) { //Solo acepta rutas relativas **SOLUCIONAR**
     try {
         fs.accessSync(userPath);
         console.log('Valid path')
@@ -27,45 +27,24 @@ function validatePath(userPath) { //Solo aceota rutas relativas **SOLUCIONAR**
 }
 validatePath(examplePath);
 
-/*if (validatePath(userPath)) {
-    //validar ruta ABOLUTA
-  console.log('Valid path');
-} else {
-  console.log('Invalid path');
-};*/
-
-
 // 2)
-/*function validateAbsolutePath(path) {
-  path.isAbsolute(path);
-if (validateAbsolutePath(path)) {
-    console.log(path);
-    console.log('Valid absolute path')
-    return true
-  } else {
-    console.log('Invalid absolute path');
-  }
-};
-validateAbsolutePath(examplePath);*/
-
-/*function validateAbsolutePath(userPath) {
-    const validatedPath = validatePath(userPath); 
-    const validatedAbolutePath = path.isAbsolute(userPath);
-
-    if (validatedPath === true && validatedAbolutePath === true ) {
-        console.log(validatedAbolutePath)   
-        console.log('Valid absolute path') 
-        return validatedAbolutePath
-    } else {
-        //Convertir en ruta absoluta
-        console.log('Invalid absolute path');
-    };
-};
-validateAbsolutePath(examplePath);*/
-
-function validateAbsolutePath(userPath) {
+function validateAbsolutePath(userPath) { //REVISAR EL CASO TRUE//
     const validatedAbsolutePath = path.isAbsolute(userPath);
+    const absolutePath = '';
     console.log('Absolute Path is ' + validatedAbsolutePath)
-    return validatedAbsolutePath;
+    if (validatedAbsolutePath === true){
+        console.log(userPath);
+        absolutePath = userPath;
+        console.log('Absolute path:', absolutePath);       
+        return absolutePath;
+    }else{
+        convertToAbsolutePath(userPath)
+    }
 };
-//validateAbsolutePath(examplePath);
+
+// 3)
+function convertToAbsolutePath(relativePath) {
+    const absolutePath = path.resolve(relativePath);
+    console.log('Absolute path:', absolutePath);
+    return absolutePath
+};
