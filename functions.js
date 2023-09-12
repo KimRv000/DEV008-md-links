@@ -1,67 +1,72 @@
-// Dar un path 
-
-// 1) Verificar que el path es válido -----> T/F
-
-// 2) Si es válida (T) -----> Validar ruta absoluta -----> T/F
-
-// 3) Si no es absoluta (F) -----> convetir 
-
-// 4) Identificar si es archivo o directorio -----> trabajar con archivo
-
-// 5) Archivo -----> identificar extensión .md
-
-// 6) Leer el archivo
-
-// 7) Identificar links
-
-//**COMPLETADO**//  FUNCIONA (PROBADO)
-
-// 8) Validar links  //solicitud HTTP// ----------> Seguir probando
-
-//---------*****---------Funciones de ejemplo están comentadas------------*****-----------//
-
-
 const path = require('path');
 const fs = require('fs');
-const https = require('https');
 
-const examplePath = 'example.md'; //Debe ser un string vacío/ Se llena para pruebas aquí // Con filename si lo valida correctamente
+const { marked } = require('marked');
+const cheerio = require('cheerio');
 
-//FUNCION QUE RELACIONA TODAS LAS FUNCIONES//
-function mdLinksTaster(userPath) {  //AQUI SE JUNTAN TODAS LAS FUNCIONES Y SE RELACIONAN  - hacerlo en mdLinks
+const examplePath = 'example.md';
+
+//PRUEBA DE FUNCION mdLinks - hacerlo en mdLinks // FUNCIONA //
+/*
+function mdLinksTaster(userPath, options) {
   let absolutePath = '';
-  try {
-    fs.accessSync(userPath);
-    console.log('Valid path')
-    if (validateAbsolutePath(userPath) === true) {
-      console.log('Absolute Path is ' + userPath)
-      absolutePath = userPath;
-    } else {
-      console.log('Absolute Path is ' + convertToAbsolutePath(userPath))
-      absolutePath = convertToAbsolutePath(userPath)
-    };
-    //console.log(absolutePath);
-    if (identifyFile(absolutePath) === true) {
-      console.log('File ext: ' + identifyFileExtension(absolutePath))
-      identifyFileExtension(absolutePath);
-    };
-    if (identifyFileExtension(absolutePath) === '.md') {
 
-      findLinksInFile(absolutePath);
-    };
-    return true;
-  } catch (error) {
-    console.log('Invalid path')
+  if (!validatePath(userPath)) {
     return false;
   }
-}
-//mdLinksTaster(examplePath);  //EJEMPLO//**/
+  if (validateAbsolutePath(userPath)) {
+    console.log('Absolute Path is ' + userPath)
+    absolutePath = userPath;
+  } else {
+    console.log('Absolute Path is ' + convertToAbsolutePath(userPath))
+    absolutePath = convertToAbsolutePath(userPath)
+  };
+  //console.log(absolutePath);
+  if (!identifyFile(absolutePath)) {
+    return false
+  };
+  if (identifyFileExtension(absolutePath) === '.md') {
+    findLinksInFile(absolutePath);
+  } else {
+    return false
+  };
+  return validatedLink(userPath);
+};
+//mdLinksTaster('example.md');  //EJEMPLO//*
+*/
 
-// 1)
+function mdLinksTaster(userPath, options) {
+  let absolutePath = '';
+
+  if (!validatePath(userPath)) {
+    return false;
+  }
+  if (validateAbsolutePath(userPath)) {
+    console.log('Absolute Path is ' + userPath)
+    absolutePath = userPath;
+  } else {
+    console.log('Absolute Path is ' + convertToAbsolutePath(userPath))
+    absolutePath = convertToAbsolutePath(userPath)
+  };
+  //console.log(absolutePath);
+  if (!identifyFile(absolutePath)) {
+    return false
+  };
+  if (identifyFileExtension(absolutePath) === '.md') {
+    findLinksInFile(absolutePath);
+  } else {
+    return false
+  };
+  return validatedLink(userPath);
+};
+//mdLinksTaster('example.md');  //EJEMPLO//**/
+
+/*--------------------------- PRUEBAS PARA OBJETO CON VALOR DE RETORNO  --------------------------------*/
+
 function validatePath(userPath) {
   try {
     fs.accessSync(userPath);
-    //console.log('Valid path')
+    console.log('Valid path')
     return true;
   } catch (error) {
     console.log('Invalid path')
@@ -70,14 +75,12 @@ function validatePath(userPath) {
 }
 //validatePath(examplePath);  //EJEMPLO//
 
-// 2)
 function validateAbsolutePath(userPath) {
   const validatedAbsolutePath = path.isAbsolute(userPath);
   console.log('Absolute Path is ' + validatedAbsolutePath)
   return validatedAbsolutePath;
 };
 
-// 3)
 function convertToAbsolutePath(relativePath) {
   const absolutePath = path.resolve(relativePath);
   //console.log('Absolute path:', absolutePath);
@@ -101,7 +104,6 @@ function createAbsolutePath(userPath) {
 }
 //const absolutePath = createAbsolutePath(examplePath);
 
-//4
 function identifyFile(filePath) {
   try {
     const stats = fs.statSync(filePath);
@@ -119,7 +121,6 @@ function identifyFile(filePath) {
 };
 //identifyFile(convertedAbsolutePath);
 
-// 5)
 function identifyFileExtension(filePath) {
   const fileExt = path.extname(filePath);
   //console.log('File extension: ' + fileExt);
@@ -127,53 +128,77 @@ function identifyFileExtension(filePath) {
 };
 //const fileExt = identifyFileExtension(convertedAbsolutePath);
 
-// 6) //Lee archivos//
+//Lee archivos//
 function readFile(filePath) {
   const fileData = fs.readFileSync(filePath, 'utf8');
-  console.log(fileData);
+  //console.log(fileData);
   return fileData;
 };
 //const fileData = readFile(convertedAbsolutePath);
 
-// 7) //Lee y encuentra los links en un archivo//
-function findLinksInFile(filePath) {
-  const fileData = fs.readFileSync(filePath, 'utf8');
-  const linkRegex = /https?:\/\/[^\s]+/g;
-  const links = fileData.match(linkRegex);
-  console.log('Links:', links);
-  return links;
-};
-//const links = findLinksInFile(absolutePath);
-
-// 8) petición HTTP  // Se puede separar en dos, una función que valide y otra que muestre el mensaje //
-function validateLink(link) {
-  return fetch(link)
-    .then(response => {
-      if (response.status <= 200 && response.status < 400) {
-        console.log('ok');
-      } else {
-        console.log('fail');
-      }
-      return response.status;
+function getLinks(userPath) {
+  let linksData = [];
+  const fileContent = readFile(userPath);
+  const htmlContent = marked(fileContent);
+  const $ = cheerio.load(htmlContent);
+  $('a').each(function () {
+    const text = ($(this).text());
+    const link = ($(this).attr('href'));
+    linksData.push({
+      href: link,
+      text: text
     })
-  //.then(response => console.log(response.status))
-  //.catch (error=> console.log('Error:', error)); 
-}
-
-function validatedLink(filePath) {
-  const links = findLinksInFile(filePath)
-  links.forEach(link => {
-    validateLink(link)
-      .then(statusCode => {
-        console.log(`Link: ${link}, Status Code: ${statusCode}`);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
   });
+  //console.log(linksData)
+  return linksData
+};
+const links = getLinks('example.md');
+console.log(links);
+
+const validateLinks = (userPath) =>{
+  new Promise((resolve, reject) => {
+    let links = [];
+
+  })
 }
 
-validatedLink('C:/Users/Kimberly/Documents/Laboratoria-Dev008/DEV008-md-links/testing_docs/DataLovers.md') //EJEMPLO//FUNCIONA ---> 404
-//validatedLink('C:/Users/Kimberly/Documents/Laboratoria-Dev008/DEV008-md-links/example.md') //EJEMPLO// FUNCIONA ---> 200
-//console.log(validateLink('https://www.youtube.com/'))// FUNCIONA
+/*
+//------------Para validar los links-------------------//
+let promiseValidateLink = new Promise(function(resolve, reject) {
+  resolve(console.log('Done'));
+  reject(new Error("error"));
+});
 
+function validateLink(links) {
+  let validatedLinks = [];
+  links.forEach((element) => {
+    fetch(element)
+      .then(response => {
+        const linkStatus = {
+          href: response.url,
+          //text: response.textContent,
+          status: response.status,
+          ok: response.statusText
+        }
+        validatedLinks.push(linkStatus)
+        //console.log(validatedLinks)
+        return validatedLinks
+      })
+      .catch(error => console.log('FAIL'));
+  })
+}
+promiseValidateLink.then( response => {
+  const links = linksText()
+   const testingValidation = validateLink(links)
+   console.log(testingValidation)
+   return testingValidation
+  }
+)
+testingValidation = validateLink(['https://www.youtube.com/', 'https://www.instagram.com/', 'https://www.facebook.com/']);
+//console.log(testingValidation)
+*/
+
+
+module.exports = {
+    validatePath: validatePath
+}
