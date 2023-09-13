@@ -309,3 +309,39 @@ promiseValidateLink.then( response => {
 )
 testingValidation = validateLink(['https://www.youtube.com/', 'https://www.instagram.com/', 'https://www.facebook.com/']);
 //console.log(testingValidation)
+
+/*
+//------------Para validar los links-------------------//
+let promiseValidateLink = new Promise(function(resolve, reject) {
+  resolve(console.log('Done'));
+  reject(new Error("error"));
+});
+
+function validateLink(links) {
+  let validatedLinks = [];
+  links.forEach((element) => {
+    fetch(element)
+      .then(response => {
+        const linkStatus = {
+          href: response.url,
+          //text: response.textContent,
+          status: response.status,
+          ok: response.statusText
+        }
+        validatedLinks.push(linkStatus)
+        //console.log(validatedLinks)
+        return validatedLinks
+      })
+      .catch(error => console.log('FAIL'));
+  })
+}
+promiseValidateLink.then( response => {
+  const links = linksText()
+   const testingValidation = validateLink(links)
+   console.log(testingValidation)
+   return testingValidation
+  }
+)
+testingValidation = validateLink(['https://www.youtube.com/', 'https://www.instagram.com/', 'https://www.facebook.com/']);
+//console.log(testingValidation)
+*/
