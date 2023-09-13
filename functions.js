@@ -132,32 +132,25 @@ function getLinks(userPath) {
 const validateLinks = (userPath) =>{
   return new Promise((resolve, reject) => {
     let validatedLinks = [];
-    //const data = readFile(userPath)
-      //console.log(data)
       const links = getLinks(userPath);
-      //console.log(links)
       const linkValidation = links.map((link) => {
         return fetch(link.href)
-         .then(response => {
+    })
+    Promise.all(linkValidation).then(value => {
+      value.forEach(response => {
             validatedLinks.push({
             href: response.url,
-            //text: response.text,
             status: response.status,
             ok: response.statusText
           })
-        })
-        //.catch(error => reject(error));
+      })
+      resolve(validatedLinks)
     })
-    Promise.all(linkValidation).then(value => console.log(value))
-    resolve(linkValidation)
-   })   
-  //   Promise.all(linkValidation).then((values) => {
-  //   console.log(values);
-  // });
-  }
+   })  
+  };
 validateLinks('/Users/wired/Desktop/mdLinks/DEV008-md-links/example.md').then(data => {
-  Promise.all(data).then(value => console.log(value))
-})
+console.log(data)
+});
 
 module.exports = {
     validatePath: validatePath,
