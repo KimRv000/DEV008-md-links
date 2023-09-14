@@ -3,11 +3,12 @@ const fs = require('fs');
 
 const { marked } = require('marked');
 const cheerio = require('cheerio');
+const { promises } = require('dns');
 
 const examplePath = 'example.md';
 
 //PRUEBA DE FUNCION mdLinks - hacerlo en mdLinks // FUNCIONA //
-/*
+
 function mdLinksTaster(userPath, options) {
   let absolutePath = '';
 
@@ -26,40 +27,12 @@ function mdLinksTaster(userPath, options) {
     return false
   };
   if (identifyFileExtension(absolutePath) === '.md') {
-    findLinksInFile(absolutePath);
+    getLinks(absolutePath);
   } else {
     return false
   };
-  return validatedLink(userPath);
 };
 //mdLinksTaster('example.md');  //EJEMPLO//*
-*/
-
-function mdLinksTaster(userPath, options) {
-  let absolutePath = '';
-
-  if (!validatePath(userPath)) {
-    return false;
-  }
-  if (validateAbsolutePath(userPath)) {
-    console.log('Absolute Path is ' + userPath)
-    absolutePath = userPath;
-  } else {
-    console.log('Absolute Path is ' + convertToAbsolutePath(userPath))
-    absolutePath = convertToAbsolutePath(userPath)
-  };
-  //console.log(absolutePath);
-  if (!identifyFile(absolutePath)) {
-    return false
-  };
-  if (identifyFileExtension(absolutePath) === '.md') {
-    findLinksInFile(absolutePath);
-  } else {
-    return false
-  };
-  return validatedLink(userPath);
-};
-//mdLinksTaster('example.md');  //EJEMPLO//**/
 
 /*--------------------------- PRUEBAS PARA OBJETO CON VALOR DE RETORNO  --------------------------------*/
 
@@ -99,7 +72,7 @@ function createAbsolutePath(userPath) {
       absolutePath = convertToAbsolutePath(userPath)
     };
   }
-  console.log(absolutePath);
+  //console.log(absolutePath);
   return absolutePath
 }
 //const absolutePath = createAbsolutePath(examplePath);
@@ -123,7 +96,7 @@ function identifyFile(filePath) {
 
 function identifyFileExtension(filePath) {
   const fileExt = path.extname(filePath);
-  //console.log('File extension: ' + fileExt);
+  console.log('File extension: ' + fileExt);
   return fileExt;
 };
 //const fileExt = identifyFileExtension(convertedAbsolutePath);
@@ -145,60 +118,47 @@ function getLinks(userPath) {
     const text = ($(this).text());
     const link = ($(this).attr('href'));
     linksData.push({
+      file: userPath,
       href: link,
       text: text
     })
   });
-  //console.log(linksData)
+  //console.log('Links: ', linksData)
   return linksData
 };
-const links = getLinks('example.md');
-console.log(links);
+//const links = getLinks('example.md');
+//console.log(links);
 
 const validateLinks = (userPath) =>{
-  new Promise((resolve, reject) => {
-    let links = [];
-
-  })
-}
-
-/*
-//------------Para validar los links-------------------//
-let promiseValidateLink = new Promise(function(resolve, reject) {
-  resolve(console.log('Done'));
-  reject(new Error("error"));
+  return new Promise((resolve, reject) => {
+    let validatedLinks = [];
+      const links = getLinks(userPath);
+      const linkValidation = links.map((link) => {
+        return fetch(link.href)
+    })
+    Promise.all(linkValidation).then(value => {
+      value.forEach(response => {
+            validatedLinks.push({
+            href: response.url,
+            status: response.status,
+            ok: response.statusText
+          })
+      })
+      resolve(validatedLinks)
+    })
+   })  
+  };
+validateLinks('/Users/wired/Desktop/mdLinks/DEV008-md-links/example.md').then(data => {
+console.log(data)
 });
 
-function validateLink(links) {
-  let validatedLinks = [];
-  links.forEach((element) => {
-    fetch(element)
-      .then(response => {
-        const linkStatus = {
-          href: response.url,
-          //text: response.textContent,
-          status: response.status,
-          ok: response.statusText
-        }
-        validatedLinks.push(linkStatus)
-        //console.log(validatedLinks)
-        return validatedLinks
-      })
-      .catch(error => console.log('FAIL'));
-  })
-}
-promiseValidateLink.then( response => {
-  const links = linksText()
-   const testingValidation = validateLink(links)
-   console.log(testingValidation)
-   return testingValidation
-  }
-)
-testingValidation = validateLink(['https://www.youtube.com/', 'https://www.instagram.com/', 'https://www.facebook.com/']);
-//console.log(testingValidation)
-*/
-
-
 module.exports = {
-    validatePath: validatePath
+    validatePath: validatePath,
+    validateAbsolutePath: validateAbsolutePath,
+    convertToAbsolutePath: convertToAbsolutePath,
+    createAbsolutePath: createAbsolutePath,
+    identifyFile: identifyFile,
+    identifyFileExtension,
+    readFile: readFile,
+    getLinks: getLinks
 }
