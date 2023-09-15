@@ -37,33 +37,33 @@ function readDirectory(userPath) {
 //---------------------PRUEBAS CON PROMESAS----------------------//
 
 //Declarar una promesa..............//
-/*
-let promiseOne = new Promise((resolve, reject)=>{
-    const sum = 1+2
-    resolve(sum);
-    reject(new Error("…")); // ignorado
 
-  });
-  //console.log(promiseOne);
+// let promiseOne = new Promise((resolve, reject)=>{
+//     const sum = 1+2
+//     resolve(sum);
+//     reject(new Error("…")); // ignorado
 
-//Para mandar a llamar a la promesa.........//
-  const promiseTesting =
-  promiseOne.finally(() => console.log("Promesa lista"))
-  promiseOne.then((result) => console.log(result));
-  promiseOne.catch((error)=> console.log(error));
-  */
+//   });
+//   //console.log(promiseOne);
+
+// //Para mandar a llamar a la promesa.........//
+//   const promiseTesting =
+//   promiseOne.finally(() => console.log("Promesa lista"))
+//   promiseOne.then((result) => console.log(result));
+//   promiseOne.catch((error)=> console.log(error));
+  
 //Opción 1//
-/*
+
 function delay(ms) {
     const promise = new Promise((resolve, reject) => {
         setTimeout(() => resolve('hello'), ms)
     });
     return promise
 };
- delay(3000).then(() => console.log('se ejecuta después de 3 segundos'));
-console.log(result)//No sencesita declarar la constante ni éste console.log//
+ //delay(3000).then(() => console.log('se ejecuta después de 3 segundos'));
+//console.log(result)//No sencesita declarar la constante ni éste console.log//
 
-
+/*
 //Opción 2//Más simplificada//
 function delay(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
@@ -113,3 +113,8 @@ const $ = cheerio.load(htmlContent);
   console.log(link)
 console.log( text)
 });
+
+function sum(a, b) {
+  return a + b;
+}
+module.exports = sum;

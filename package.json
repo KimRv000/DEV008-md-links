@@ -12,5 +12,11 @@
   "dependencies": {
     "cheerio": "^1.0.0-rc.12",
     "marked": "^8.0.1"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0"
+  },
+  "scripts": {
+    "test": "jest --watch"
   }
 }
