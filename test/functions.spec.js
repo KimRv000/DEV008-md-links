@@ -34,7 +34,7 @@ describe('getLinks', () => {
             {
                 file: 'example.md',
                 href: 'https://www.instagram.com/',
-                text: 'Instagram '
+                text: 'Instagram'
             },
             {
                 file: 'example.md',

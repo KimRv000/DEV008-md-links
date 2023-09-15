@@ -10,7 +10,7 @@ describe('mdLinks', () => {
           expect(response).toEqual( [
             {
               href: 'https://www.instagram.com/',
-              text: 'Instagram ',
+              text: 'Instagram',
               file: 'C:/Users/Kimberly/Documents/Laboratoria-Dev008/DEV008-md-links/example.md',
               status: 200,
               ok: 'ok'
@@ -34,7 +34,7 @@ describe('mdLinks', () => {
           expect(response).toEqual( [
             {
               href: 'https://www.instagram.com/',
-              text: 'Instagram ',
+              text: 'Instagram',
               file: 'C:/Users/Kimberly/Documents/Laboratoria-Dev008/DEV008-md-links/example.md',
             },
             {
