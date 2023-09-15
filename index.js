@@ -34,8 +34,8 @@ function mdLinks(path, options) {
 let options = {
   validation: true
 };
-mdLinks('example.md', options).then((data) => console.log('correcto', data))
-  .catch((error) => console.log('incorrecto', error))
+//mdLinks('example.md', options).then((data) => console.log( data))
+  //.catch((error) => console.log(error))
 
 
   module.exports = {
