@@ -1,35 +1,43 @@
 const functions = require('./functions')
 //console.log(functions)
 
-function mdLinks(path, options){
-let absolutePath = '';
-let returnValues = [];
-
-if (!functions.validatePath(path)) {
-  return false;
+function mdLinks(path, options) {
+  return new Promise((resolve, reject) => {
+    let absolutePath = '';
+    //return returnValues
+    if (!functions.validatePath(path)) {
+      reject('Invalid path');
+    }
+    if (functions.validateAbsolutePath(path)) {
+      //console.log('Absolute Path is ' + path)
+      absolutePath = path;
+    } else {
+      //console.log('Absolute Path is ' + functions.convertToAbsolutePath(path))
+      absolutePath = functions.convertToAbsolutePath(path)
+    };
+    //console.log(absolutePath);
+    if (!functions.identifyFile(absolutePath)) {
+      reject("It's not a file")
+    };
+    if (functions.identifyFileExtension(absolutePath) === '.md') {
+      if (!options.validation) {
+        resolve(functions.getLinks(absolutePath))
+      } else {
+        functions.validateLinks(absolutePath).then((data) => resolve(data))
+          .catch((error) => reject(error))
+      }
+    } else {
+      reject("It's not an md file")
+    }
+  })
 }
-if (functions.validateAbsolutePath(path)) {
-  //console.log('Absolute Path is ' + path)
-  absolutePath = path;
-} else {
-  //console.log('Absolute Path is ' + functions.convertToAbsolutePath(path))
-  absolutePath = functions.convertToAbsolutePath(path)
+let options = {
+  validation: true
 };
-//console.log(absolutePath);
-if (!functions.identifyFile(absolutePath)) {
-  return false
-};
-if (functions.identifyFileExtension(absolutePath) === '.md') {
-  returnValues.push(functions.getLinks(absolutePath));
-} else {
-  return false
-};
-console.log(returnValues)
-return returnValues
-}
-mdLinks('example.md')
+mdLinks('example.md', options).then((data) => console.log('correcto', data))
+  .catch((error) => console.log('incorrecto', error))
 
 
-module.exports = {
-  mdLinks: mdLinks
-}
+  module.exports = {
+    mdLinks: mdLinks
+  }
