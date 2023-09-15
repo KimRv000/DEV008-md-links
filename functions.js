@@ -4,37 +4,6 @@ const fs = require('fs');
 const { marked } = require('marked');
 const cheerio = require('cheerio');
 
-const examplePath = 'example.md';
-
-//PRUEBA DE FUNCION mdLinks - hacerlo en mdLinks // FUNCIONA //
-
-function mdLinksTaster(userPath, options) {
-  let absolutePath = '';
-
-  if (!validatePath(userPath)) {
-    return false;
-  }
-  if (validateAbsolutePath(userPath)) {
-    console.log('Absolute Path is ' + userPath)
-    absolutePath = userPath;
-  } else {
-    console.log('Absolute Path is ' + convertToAbsolutePath(userPath))
-    absolutePath = convertToAbsolutePath(userPath)
-  };
-  //console.log(absolutePath);
-  if (!identifyFile(absolutePath)) {
-    return false
-  };
-  if (identifyFileExtension(absolutePath) === '.md') {
-    getLinks(absolutePath);
-  } else {
-    return false
-  };
-};
-//mdLinksTaster('example.md');  //EJEMPLO//*
-
-/*--------------------------- PRUEBAS PARA OBJETO CON VALOR DE RETORNO  --------------------------------*/
-
 function validatePath(userPath) {
   try {
     fs.accessSync(userPath);
@@ -44,16 +13,14 @@ function validatePath(userPath) {
     //console.log('Invalid path')
     return false;
   }
-}
-//validatePath(examplePath);  //EJEMPLO//
+};
 
 function validateAbsolutePath(userPath) {
   const validatedAbsolutePath = path.isAbsolute(userPath);
-  //console.log('Absolute Path is ' + validatedAbsolutePath)
   return validatedAbsolutePath;
 };
 
-function convertToAbsolutePath(relativePath) { //--------------------------REVISAR-------------------------//
+function convertToAbsolutePath(relativePath) {
   let absolutePath = '';
   const absolutePathResolved = path.resolve(relativePath);
   if (absolutePathResolved.includes,('\\')) {
@@ -63,14 +30,12 @@ function convertToAbsolutePath(relativePath) { //--------------------------REVIS
   //console.log('Absolute path:', absolutePath);
   return absolutePath
 };
-//convertToAbsolutePath(examplePath);
 
 //---------FUNCION PARA CREAR PATH ABSOLUTO-----------// 
 function createAbsolutePath(userPath) {
   let absolutePath = '';
   if (validatePath(userPath)) {
     if (validateAbsolutePath(userPath)) {
-      //console.log('Absolute Path is ' + userPath)
       absolutePath = userPath;
     } else {
       absolutePath = convertToAbsolutePath(userPath)
@@ -78,14 +43,12 @@ function createAbsolutePath(userPath) {
   }
   //console.log(absolutePath);
   return absolutePath
-}
-//createAbsolutePath(examplePath);
+};
 
 function identifyFile(filePath) {
   try {
     const stats = fs.statSync(filePath);
     if (stats.isFile()) {
-      //console.log(stats);
       //console.log(`${filePath} is a file.`);
       return true;
     } else {
@@ -96,14 +59,12 @@ function identifyFile(filePath) {
     //console.log('Error:', error);
   }
 };
-//identifyFile(convertedAbsolutePath);
 
 function identifyFileExtension(filePath) {
   const fileExt = path.extname(filePath);
   //console.log('File extension: ' + fileExt);
   return fileExt;
 };
-//identifyFileExtension(examplePath);
 
 //Lee archivos//
 function readFile(filePath) {
@@ -111,7 +72,6 @@ function readFile(filePath) {
   //console.log(fileData);
   return fileData;
 };
-//const fileData = readFile(examplePath);
 
 function getLinks(userPath) {
   let linksData = [];
@@ -130,8 +90,6 @@ function getLinks(userPath) {
   //console.log('Links: ', linksData)
   return linksData
 };
-// const links = getLinks('example.md');
-// console.log(links);
 
 const validateLinks = (userPath) => {
   return new Promise((resolve, reject) => {
@@ -161,10 +119,6 @@ const validateLinks = (userPath) => {
     })
   })
 };
-// validateLinks('C:/Users/Kimberly/Documents/Laboratoria-Dev008/DEV008-md-links/example.md').then(data => {
-//   console.log(data)
-// })
-//   .catch(error => console.log('Invalid link'));
 
 module.exports = {
   validatePath: validatePath,

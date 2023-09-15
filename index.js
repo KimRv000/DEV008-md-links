@@ -1,21 +1,16 @@
 const functions = require('./functions')
-//console.log(functions)
 
 function mdLinks(path, options) {
   return new Promise((resolve, reject) => {
     let absolutePath = '';
-    //return returnValues
     if (!functions.validatePath(path)) {
       reject('Invalid path');
     }
     if (functions.validateAbsolutePath(path)) {
-      //console.log('Absolute Path is ' + path)
       absolutePath = path;
     } else {
-      //console.log('Absolute Path is ' + functions.convertToAbsolutePath(path))
       absolutePath = functions.convertToAbsolutePath(path)
     };
-    //console.log(absolutePath);
     if (!functions.identifyFile(absolutePath)) {
       reject("It's not a file")
     };
