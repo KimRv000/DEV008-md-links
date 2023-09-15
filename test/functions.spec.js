@@ -55,7 +55,8 @@ describe('validateLinks valida links', () => {
                 file: 'example.md',
                 status: 200,
                 ok: 'ok'
-            }, {
+            }, 
+            {
                 href: 'https://www.facebook.com/',
                 text: 'Facebook',
                 file: 'example.md',
