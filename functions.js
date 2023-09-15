@@ -100,7 +100,7 @@ function identifyFile(filePath) {
 
 function identifyFileExtension(filePath) {
   const fileExt = path.extname(filePath);
-  console.log('File extension: ' + fileExt);
+  //console.log('File extension: ' + fileExt);
   return fileExt;
 };
 //identifyFileExtension(examplePath);
@@ -135,14 +135,11 @@ function getLinks(userPath) {
 
 const validateLinks = (userPath) => {
   return new Promise((resolve, reject) => {
-    let linksArray = [];
     let linkData = {};
     const links = getLinks(userPath);
-    //console.log(links)
     const linkValidation = links.map((link) => {
       return fetch(link.href)
         .then((response) => {
-          //console.log(response, 'response')
           let ok = '';
           if (response.status <= 200 && response.status < 400) {
             ok = 'ok';
@@ -156,20 +153,18 @@ const validateLinks = (userPath) => {
             status: response.status,
             ok: ok
           }
-          //console.log(prueba)
           return linkData
         })
     })
     Promise.all(linkValidation).then(value => {
-      linksArray.push(value)
-      resolve(linksArray)
+      resolve(value)
     })
   })
 };
-validateLinks('C:/Users/Kimberly/Documents/Laboratoria-Dev008/DEV008-md-links/example.md').then(data => {
-  console.log(data)
-})
-  .catch(error => console.log('Invalid link'));
+// validateLinks('C:/Users/Kimberly/Documents/Laboratoria-Dev008/DEV008-md-links/example.md').then(data => {
+//   console.log(data)
+// })
+//   .catch(error => console.log('Invalid link'));
 
 module.exports = {
   validatePath: validatePath,

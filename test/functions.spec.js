@@ -28,7 +28,7 @@ describe('identifyFileExtension', () => {
 });
 
 describe('getLinks', () => {
-    it.only('Should return the links from a file', () => {
+    it('Should return the links from a file', () => {
         const path = 'example.md';
         expect(functions.getLinks(path)).toEqual([
             {
