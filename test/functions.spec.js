@@ -1,11 +1,11 @@
 const functions = require('../functions')
 
-describe('Test to validate absolute paths', () => {
-    it('Debería validar una ruta absoluta correctamente', () => {
+describe('validateAbsolutePath', () => {
+    it('Should validate an absolute path', () => {
         const path = 'C:/Users/Kimberly/Documents/Laboratoria-Dev008/DEV008-md-links/example.md';
         expect(functions.validateAbsolutePath(path)).toEqual(true);
     });
-    it('Debería validar una ruta relativa correctamente', () => {
+    it('Should validate an absolute path', () => {
         const path = 'testing_docs/DataLovers.md';
         expect(functions.validateAbsolutePath(path)).toEqual(false);
     });
@@ -45,8 +45,8 @@ describe('getLinks', () => {
     });
 });
 
-describe('validateLinks valida links', () => {
-    it('Debería validar el estatus de los links', () => {
+describe('validateLinks', () => {
+    it('Should validate the links status', () => {
         const path = 'example.md';
         functions.validateLinks(path).then((response) => {
             expect(response).toEqual([{
